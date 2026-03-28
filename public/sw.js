@@ -39,7 +39,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // Helper functions for URL classification
-const isApiUrl = (url) => url.includes('supabase.co') || url.includes('/api/');
+const isApiUrl = (url) => url.includes('/api/');
 const isImageUrl = (url) => url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) || url.includes('images.unsplash.com');
 const isFontUrl = (url) => url.match(/\.(woff|woff2|ttf|eot)$/i);
 const isStaticAsset = (url) => url.match(/\.(js|css)$/i);
@@ -64,10 +64,10 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           return caches.match(event.request).then(response => {
-             // Fallback to offline json if not in cache
-             return response || new Response(JSON.stringify({ error: 'Offline', data: [] }), { 
-               headers: { 'Content-Type': 'application/json' } 
-             });
+            // Fallback to offline json if not in cache
+            return response || new Response(JSON.stringify({ error: 'Offline', data: [] }), {
+              headers: { 'Content-Type': 'application/json' }
+            });
           });
         })
     );
@@ -83,7 +83,7 @@ self.addEventListener('fetch', (event) => {
           // Return cached response immediately
           return cachedResponse;
         }
-        
+
         // If not in cache, fetch from network
         return fetch(event.request).then((response) => {
           // Check for valid response
@@ -99,10 +99,10 @@ self.addEventListener('fetch', (event) => {
 
           return response;
         }).catch(() => {
-           // Return placeholder for images if offline and not cached
-           if (isImageUrl(url.href)) {
-             return new Response('<svg>...</svg>', { headers: { 'Content-Type': 'image/svg+xml' }});
-           }
+          // Return placeholder for images if offline and not cached
+          if (isImageUrl(url.href)) {
+            return new Response('<svg>...</svg>', { headers: { 'Content-Type': 'image/svg+xml' } });
+          }
         });
       })
     );
@@ -120,11 +120,11 @@ self.addEventListener('fetch', (event) => {
           });
           return networkResponse;
         }).catch(() => {
-           // Fallback page if network fails and no cache (offline.html logic)
-           // For SPA, we often fall back to index.html from cache
-           return caches.match('/index.html');
+          // Fallback page if network fails and no cache (offline.html logic)
+          // For SPA, we often fall back to index.html from cache
+          return caches.match('/index.html');
         });
-        
+
         return cachedResponse || fetchPromise;
       })
     );
