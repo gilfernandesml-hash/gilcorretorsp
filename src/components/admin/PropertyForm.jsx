@@ -193,9 +193,8 @@ const PropertyForm = ({ mode = 'create', initialData = null, onSuccess }) => {
 
     try {
       const newImages = [];
-      for (const file of files) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${isPlans ? 'plan_' : 'prop_'}${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+      for (const file of files)
+        const fileName = `${isPlans ? 'plan_' : 'prop_'}${Date.now()}_${Math.random().toString(36).substring(2, 9)};
         const { error } = await supabase.storage.from('property-images').upload(fileName, file);
         if (error) throw error;
         const { data } = supabase.storage.from('property-images').getPublicUrl(fileName);
