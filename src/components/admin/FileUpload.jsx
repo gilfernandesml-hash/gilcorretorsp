@@ -5,10 +5,10 @@ import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 
-const FileUpload = ({ 
-  files = [], 
-  onFilesChange, 
-  bucketName = 'property-images', 
+const FileUpload = ({
+  files = [],
+  onFilesChange,
+  bucketName = 'property-images',
   folderPath = 'plans',
   maxSizeMB = 10,
   acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg']
