@@ -1,79 +1,111 @@
+import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
+import { supabase } from '@/lib/supabase';
+import { useToast } from '@/components/ui/use-toast';
 
-const handleImageUpload = async (e, field = 'images') => {
-  const files = Array.from(e.target.files || []);
-  if (files.length === 0) return;
+const PropertyForm = () => {
+  const { toast } = useToast();
 
-  const isPlans = field === 'plans_urls';
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [formData, setFormData] = useState({
+    images: [],
+    plans_urls: []
+  });
 
-  if (isPlans) {
-    setUploadingPlans(true);
-  } else {
-    setUploadingImages(true);
-  }
+  const handleImageUpload = async (e, field = 'images') => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-  try {
-    const newImages = [];
+    const isPlans = field === 'plans_urls';
 
-    for (const file of files) {
+    if (isPlans) {
+      setUploadingImages(true);
+    } else {
+      setUploadingImages(true);
+    }
 
-      // 🔥 COMPRESSÃO + CONVERSÃO PARA JPG
-      const compressed = await imageCompression(file, {
-        maxSizeMB: 0.7,
-        maxWidthOrHeight: 1600,
-        useWebWorker: true,
-        fileType: 'image/jpeg'
-      });
+    try {
+      const newImages = [];
 
-      const processedFile = new File(
-        [compressed],
-        file.name.replace(/\.\w+$/, ".jpg"),
-        { type: 'image/jpeg' }
-      );
+      for (const file of files) {
 
-      // 🔥 NOME SEGURO
-      const fileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 8)}.jpg`;
+        // 🔥 COMPRESSÃO + JPG
+        const compressed = await imageCompression(file, {
+          maxSizeMB: 0.7,
+          maxWidthOrHeight: 1600,
+          useWebWorker: true,
+          fileType: 'image/jpeg'
+        });
 
-      // 🔥 UPLOAD
-      const { error } = await supabase.storage
-        .from('property-images')
-        .upload(fileName, processedFile);
+        const processedFile = new File(
+          [compressed],
+          file.name.replace(/\.\w+$/, ".jpg"),
+          { type: 'image/jpeg' }
+        );
 
-      if (error) {
-        console.error("Erro upload:", error);
-        throw error;
+        const fileName = `${Date.now()}-${Math.random()
+          .toString(36)
+          .substring(2, 8)}.jpg`;
+
+        const { error } = await supabase.storage
+          .from('property-images')
+          .upload(fileName, processedFile);
+
+        if (error) throw error;
+
+        const { data } = supabase.storage
+          .from('property-images')
+          .getPublicUrl(fileName);
+
+        newImages.push(data.publicUrl);
       }
 
-      // 🔥 URL
-      const { data } = supabase.storage
-        .from('property-images')
-        .getPublicUrl(fileName);
+      setFormData(prev => ({
+        ...prev,
+        [field]: [...prev[field], ...newImages]
+      }));
 
-      newImages.push(data.publicUrl);
-    }
+      toast({
+        title: "Upload concluído",
+        description: `${newImages.length} imagem(ns) enviada(s)`
+      });
 
-    // 🔥 ATUALIZA FORM
-    setFormData(prev => ({
-      ...prev,
-      [field]: [...prev[field], ...newImages]
-    }));
+    } catch (error) {
+      console.error(error);
 
-  } catch (error) {
-    console.error("❌ ERRO COMPLETO:", error);
+      toast({
+        title: "Erro no upload",
+        description: error.message,
+        variant: "destructive"
+      });
 
-    toast({
-      title: "Erro no upload",
-      description: error.message || "Falha ao enviar arquivos",
-      variant: "destructive"
-    });
-
-  } finally {
-    if (isPlans) {
-      setUploadingPlans(false);
-    } else {
+    } finally {
       setUploadingImages(false);
     }
-  }
+  };
+
+  return (
+    <div className="p-6 space-y-4">
+
+      <h2 className="text-xl font-bold">Upload de Imagens</h2>
+
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => handleImageUpload(e, 'images')}
+      />
+
+      {uploadingImages && <p>Enviando...</p>}
+
+      <div className="grid grid-cols-2 gap-4">
+        {formData.images.map((img, index) => (
+          <img key={index} src={img} className="w-full rounded" />
+        ))}
+      </div>
+
+    </div>
+  );
 };
+
+export default PropertyForm;
