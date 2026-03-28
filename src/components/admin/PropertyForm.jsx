@@ -31,12 +31,12 @@ const handleImageUpload = async (e, field = 'images') => {
         { type: 'image/jpeg' }
       );
 
-      // 🔥 NOME SEGURO (SEM ERRO DE BUILD)
+      // 🔥 NOME SEGURO
       const fileName = `${Date.now()}-${Math.random()
         .toString(36)
         .substring(2, 8)}.jpg`;
 
-      // 🔥 UPLOAD CORRETO
+      // 🔥 UPLOAD
       const { error } = await supabase.storage
         .from('property-images')
         .upload(fileName, processedFile);
@@ -46,7 +46,7 @@ const handleImageUpload = async (e, field = 'images') => {
         throw error;
       }
 
-      // 🔥 URL PÚBLICA
+      // 🔥 URL
       const { data } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
