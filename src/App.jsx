@@ -1,24 +1,12 @@
 import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import 'leaflet/dist/leaflet.css';
-import Footer from '@/components/layout/Footer';
+import HomePage from './pages/HomePage'
 
-// Performance (opcional)
-import { onCLS, onFID, onLCP } from 'web-vitals';
-
-if (import.meta.env.DEV) {
-  const logMetric = (metric) => {
-    console.log(`[Performance] ${metric.name}: ${metric.value}`);
-  };
-  onCLS(logMetric);
-  onFID(logMetric);
-  onLCP(logMetric);
+function App() {
+  return (
+    <div className="App">
+      <HomePage />
+    </div>
+  )
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+export default App
