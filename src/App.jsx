@@ -54,7 +54,6 @@ initPerformanceMonitoring();
 
 function App() {
   useEffect(() => {
-    // Initialize deferred scripts
     setupScriptLoader();
   }, []);
 
@@ -66,35 +65,43 @@ function App() {
         
         <div className="min-h-screen bg-[#f5f7fa] font-sans">
           <Navigation />
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              {/* Home is Eager */}
-              <Route path="/" element={<HomePage />} />
-              
-              {/* All other routes Lazy */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/cadastro" element={<SignupPage />} />
-              <Route path="/imoveis" element={<PropertyListPage />} />
-              <Route path="/properties/map" element={<PropertyMapPage />} />
-              <Route path="/imovel/:slug" element={<PropertyDetailPage />} />
-              <Route path="/neighborhood/:neighborhoodSlug" element={<NeighborhoodPage />} /> 
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/blog/:slug" element={<BlogDetailPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              
-              <Route path="/perfil" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
-              <Route path="/favoritos" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
-              <Route path="/broker/dashboard" element={<ProtectedRoute><BrokerDashboard /></ProtectedRoute>} />
-              <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard initialTab="properties" /></ProtectedRoute>} />
-              <Route path="/admin/seo-management" element={<ProtectedRoute><AdminDashboard initialTab="seo" /></ProtectedRoute>} />
-              
-              <Route path="/404" element={<NotFoundPage />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-          </Suspense>
+
+          <Layout>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+
+                {/* Home */}
+                <Route path="/" element={<HomePage />} />
+
+                {/* Públicas */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/cadastro" element={<SignupPage />} />
+                <Route path="/imoveis" element={<PropertyListPage />} />
+                <Route path="/properties/map" element={<PropertyMapPage />} />
+                <Route path="/imovel/:slug" element={<PropertyDetailPage />} />
+                <Route path="/neighborhood/:neighborhoodSlug" element={<NeighborhoodPage />} /> 
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+                {/* Protegidas */}
+                <Route path="/perfil" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
+                <Route path="/favoritos" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+                <Route path="/broker/dashboard" element={<ProtectedRoute><BrokerDashboard /></ProtectedRoute>} />
+                <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard initialTab="properties" /></ProtectedRoute>} />
+                <Route path="/admin/seo-management" element={<ProtectedRoute><AdminDashboard initialTab="seo" /></ProtectedRoute>} />
+
+                {/* Erro */}
+                <Route path="/404" element={<NotFoundPage />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+
+              </Routes>
+            </Suspense>
+          </Layout>
+
           <ScrollToTop />
           <Toaster />
         </div>
@@ -102,5 +109,3 @@ function App() {
     </AuthProvider>
   );
 }
-
-export default App;
