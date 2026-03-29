@@ -7,6 +7,20 @@ import ScrollToTop from '@/components/ScrollToTop';
 import LoadingFallback from '@/components/LoadingFallback';
 import { initPerformanceMonitoring } from '@/utils/performanceReporter';
 import { setupScriptLoader } from '@/utils/scriptLoader';
+import Footer from './Footer';
+
+function Layout({ children }) {
+  return (
+    <>
+      {/* Header */}
+      
+      {children}
+
+      <Footer />
+    </>
+  );
+}
+
 
 // Tidio Chat Integration - Lazy Loaded logic inside
 import TidioScript from '@/components/TidioScript';
