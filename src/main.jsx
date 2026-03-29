@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import 'leaflet/dist/leaflet.css';
+import Footer from '@/components/layout/Footer';
 
 // Performance (opcional)
 import { onCLS, onFID, onLCP } from 'web-vitals';
@@ -19,3 +20,12 @@ if (import.meta.env.DEV) {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />,
 )
+function App() {
+  return (
+    <>
+      {/* suas rotas / conteúdo */}
+
+      <Footer />
+    </>
+  );
+}
