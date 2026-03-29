@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import 'leaflet/dist/leaflet.css';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Performance (opcional)
 import { onCLS, onFID, onLCP } from 'web-vitals';
@@ -19,9 +20,6 @@ if (import.meta.env.DEV) {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
+    <SpeedInsights />
   </React.StrictMode>
-<<<<<<< HEAD
 )
-=======
-)
->>>>>>> fba4f8328c0973dab35e98c26670ba6deff07ec1
