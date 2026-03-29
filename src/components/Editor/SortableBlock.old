@@ -1,0 +1,63 @@
+import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical, Trash2 } from 'lucide-react';
+
+const SortableBlock = ({
+    id,
+    block,
+    children,
+    isSelected,
+    onSelect,
+    onDelete,
+}) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.65 : 1,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`bg-white rounded-xl border shadow-sm overflow-hidden ${isSelected ? 'ring-2 ring-blue-500 border-blue-300' : 'border-gray-200'
+                }`}
+        >
+            <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50">
+                <div
+                    className="flex items-center gap-2 text-gray-700 cursor-grab active:cursor-grabbing select-none"
+                    style={{ touchAction: 'none' }}
+                    {...attributes}
+                    {...listeners}
+                >
+                    <GripVertical className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm font-medium">{block.label}</span>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => onDelete(block.id)}
+                    className="p-2 rounded hover:bg-red-50 text-red-500"
+                >
+                    <Trash2 className="w-4 h-4" />
+                </button>
+            </div>
+
+            <div onClick={() => onSelect(block.id)} className="cursor-default">
+                {children}
+            </div>
+        </div>
+    );
+};
+
+export default SortableBlock;
